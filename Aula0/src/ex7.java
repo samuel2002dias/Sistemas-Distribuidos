@@ -9,14 +9,14 @@ public class ex7 {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("C://Users//Admin//Desktop//Sistemas-Distribuidos//Aula0//ex6.txt"))) {
             @SuppressWarnings("unchecked")
             ArrayList<String> lines = (ArrayList<String>) ois.readObject();
-            System.out.println("Lines of text read from file:");
+            System.out.println("Linhas de texto lidas do ficheiro:");
             for (String line : lines) {
                 System.out.println(line);
             }
         } catch (IOException e) {
-            System.err.println("Error reading lines of text: " + e.getMessage());
+            System.err.println("Erro ao ler linhas de texto do ficheiro:  " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            System.err.println("Error reading lines of text: " + e.getMessage());
+            System.err.println("Erro ao ler linhas de texto do ficheiro:  " + e.getMessage());
         }
 	}
 

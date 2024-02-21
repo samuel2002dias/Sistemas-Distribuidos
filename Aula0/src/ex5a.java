@@ -13,9 +13,9 @@ public class ex5a {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("C://Users//Admin//Desktop//Sistemas-Distribuidos//Aula0//persons.txt"))) {
             oos.writeObject(p1);
             oos.writeObject(p2);
-            System.out.println("Persons objects written to file.");
+            System.out.println("Pessoa registada com sucesso no ficheiro.");
         } catch (IOException e) {
-            System.err.println("Error writing Person object: " + e.getMessage());
+            System.err.println("Erro ao registar a pessoa. " + e.getMessage());
         }
 	}
 

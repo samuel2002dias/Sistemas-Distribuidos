@@ -13,7 +13,7 @@ public class ex4 {
                 System.out.println(line);
             }
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+            System.out.println("Erro a ler o ficheiro: " + e.getMessage());
         }
     }
 
