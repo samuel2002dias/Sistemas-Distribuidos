@@ -6,8 +6,7 @@ public class ex3b {
     public static void main(String[] args) throws IOException {
         String s = " ";
         char c;
-
-        System.out.print("Host name? ");
+        System.out.print("Host name?\n");
 
         while ((c = (char) System.in.read()) != 10)
             s += c;
