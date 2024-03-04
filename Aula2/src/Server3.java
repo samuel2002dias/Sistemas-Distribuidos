@@ -27,9 +27,40 @@ public class Server3 {
         public ClientHandler(Socket socket) {
             this.clientSocket = socket;
         }
-    }
 
-    public void run() {
-        /* Completar */
+        public void run() {
+            try {
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                String inputLine;
+                char clientType = ' ';
+                int messageCounter = 0;
+
+                while ((inputLine = in.readLine()) != null) {
+                    System.out.println("Client: " + inputLine);
+                    if (inputLine.equalsIgnoreCase("disconnect")) {
+                        break;
+                    }
+
+                    if (messageCounter == 0) {
+                        clientType = inputLine.charAt(0);
+                        out.println("Client type has been set to " + clientType + ".");
+                    } else {
+                        if (clientType == 'A') {
+                            out.println(inputLine + "**2 = " + Math.pow(Integer.parseInt(inputLine), 2));
+                        } else if (clientType == 'B') {
+                            out.println("sqrt(" + inputLine + ") = " + Math.sqrt(Double.parseDouble(inputLine)));
+                        }
+                    }
+                    messageCounter++;
+                }
+
+                System.out.println("Client " + clientSocket.getInetAddress().getHostAddress() + " disconnected");
+                clientSocket.close();
+            } catch (IOException e) {
+                System.err.println("Error handling client: " + e.getMessage());
+            }
+        }
     }
 }
