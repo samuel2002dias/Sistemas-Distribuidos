@@ -9,11 +9,12 @@ public class Server1 {
             ServerSocket serverSocket = new ServerSocket(portNumber);
             System.out.println("Server started on port " + portNumber);
 
+            // Exercicio 2
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client " + clientSocket.getInetAddress().getHostAddress() + " connected");
                 new ClientHandler(clientSocket).start();
-            }
+            } 
 
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());

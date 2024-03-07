@@ -8,7 +8,7 @@ public class Client3 {
 
 		try {
 			Socket socket = new Socket(serverAddress, portNumber);
-			
+
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			BufferedReader keyboardIn = new BufferedReader(new InputStreamReader(System.in));
@@ -19,13 +19,13 @@ public class Client3 {
 			while (true) {
 				System.out.print("Enter message to send to server: ");
 				String outputLine = keyboardIn.readLine();
-				
-				if (outputLine.equalsIgnoreCase("disconnect")) {
-			        System.out.println("Closing connection...");
-			        socket.close();
-			        break;
-			    }
-		
+
+				if (outputLine.equalsIgnoreCase("end")) {
+					System.out.println("Closing connection...");
+					socket.close();
+					break;
+				}
+
 				out.println(outputLine);
 				out.flush();
 

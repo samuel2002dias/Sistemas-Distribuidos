@@ -35,15 +35,14 @@ public class Server3 {
 
                 String inputLine;
                 char clientType = ' ';
-                int messageCounter = 0;
 
                 while ((inputLine = in.readLine()) != null) {
                     System.out.println("Client: " + inputLine);
-                    if (inputLine.equalsIgnoreCase("disconnect")) {
+                    if (inputLine.equalsIgnoreCase("end")) {
                         break;
                     }
 
-                    if (messageCounter == 0) {
+                    if (inputLine.length() == 1 && (inputLine.charAt(0) == 'A' || inputLine.charAt(0) == 'B')) {
                         clientType = inputLine.charAt(0);
                         out.println("Client type has been set to " + clientType + ".");
                     } else {
@@ -53,7 +52,6 @@ public class Server3 {
                             out.println("sqrt(" + inputLine + ") = " + Math.sqrt(Double.parseDouble(inputLine)));
                         }
                     }
-                    messageCounter++;
                 }
 
                 System.out.println("Client " + clientSocket.getInetAddress().getHostAddress() + " disconnected");
