@@ -1,6 +1,6 @@
 public class SomaSequencial {
     public static void main(String[] args) {
-        int dim = 1000000;
+        int dim = 100000000;
         int[] A = new int[dim];
         int[] B = new int[dim];
         int[] C = new int[dim];
@@ -25,4 +25,5 @@ public class SomaSequencial {
 }
 
 // 3-
-// c) Para arrays grandes, o sequencial é mais lento. S:ms vs T:ms
+// c) Para arrays grandes e à medida que a complexidade aumenta, a resolução
+// sequencial torna-se mais lenta que a resolução por threads.S:ms vs T:ms

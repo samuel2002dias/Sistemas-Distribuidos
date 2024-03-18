@@ -1,6 +1,6 @@
 public class TesteSoma {
     public static void main(String[] str) {
-        int dim = 1000000;
+        int dim = 100000000;
         int[] A = new int[dim];
         int[] B = new int[dim];
         int[] C = new int[dim];
