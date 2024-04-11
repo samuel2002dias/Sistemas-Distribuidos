@@ -8,9 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Aula3.Aluno;
-
-public class Connection extends Thread {
+public class ConnectionAluno extends Thread {
     private ServerSocket serverSocket;
     Socket clientSocket = null;
     private int[] numeroAcessos;
@@ -19,7 +17,7 @@ public class Connection extends Thread {
     private static final String SERVER_HEADER = "\n_______________________\n|        SERVER       |\n\n";
     private static final String SERVER_FOOTER = "|                     |\n_______________________\nEOF";
 
-    public Connection(ServerSocket serverSocket, int[] numeroAcessos, ArrayList<Aluno> listaAlunos) {
+    public ConnectionAluno(ServerSocket serverSocket, int[] numeroAcessos, ArrayList<Aluno> listaAlunos) {
         super();
         this.serverSocket = serverSocket;
         this.numeroAcessos = numeroAcessos;
@@ -161,7 +159,7 @@ public class Connection extends Thread {
 
     private static void writeAlunosToFile(ArrayList<Aluno> alunos) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-                "C:\\Users\\gui\\Desktop\\Programação\\DistributedSystems-UBI\\PracticalClasses\\Aulas\\src\\MultiThreadAlunos\\alunos.ser"))) {
+                "C:\\\\Users\\\\BEIRATOOLS\\\\Desktop\\\\Sistemas-Distribuidos\\\\Aula5\\\\src\\\\aluno.txt"))) {
             oos.writeObject(alunos);
         } catch (IOException e) {
             System.err.println("Error writing list of students: " + e.getMessage());
