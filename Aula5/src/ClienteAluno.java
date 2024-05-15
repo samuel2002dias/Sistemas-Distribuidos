@@ -8,7 +8,7 @@ import java.net.Socket;
 public class ClienteAluno {
 	public static void main(String[] args) {
 		// Set server IP and port number
-		String serverAddress = "192.168.137.1";
+		String serverAddress = "127.0.0.1";
 		int portNumber = 2222;
 
 		try {
