@@ -18,64 +18,63 @@ public class Client {
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
         BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in))) {
       String menu = "Gestor de alunos\n\n1 - Registar aluno\n2 - Listar alunos\n3 - Consultar acessos\n4 - Consultar aluno\n\n0 - Sair\n\nopção: ";
-      boolean exit = false;
+      boolean saida = false;
       int option = 0;
       do {
         try {
           System.out.print(menu);
           option = Integer.parseInt(teclado.readLine());
-          ArrayList<Student> students;
+          ArrayList<Student> alunos;
           switch (option) {
             case 0:
               oos.writeObject("0");
-              exit = true;
+              saida = true;
               break;
             case 1:
               oos.writeObject("1");
               oos.writeObject(createStudent(teclado));
-              
+
               break;
             case 2:
               oos.writeObject("2");
-              students = (ArrayList<Student>) ois.readObject();
-              listStudents(students);
-              
+              alunos = (ArrayList<Student>) ois.readObject();
+              listStudents(alunos);
+
               break;
             case 3:
               oos.writeObject("3");
               int connections = Integer.parseInt((String) ois.readObject());
               System.out.println(connections);
-             
+
               break;
             case 4:
               oos.writeObject("4");
               String name = searchName(teclado);
               oos.writeObject(name);
-              students = (ArrayList<Student>) ois.readObject();
-              if (!students.isEmpty()) {
-                listStudents(students);
+              alunos = (ArrayList<Student>) ois.readObject();
+              if (!alunos.isEmpty()) {
+                listStudents(alunos);
               } else {
-                System.out.println("No students found with name: " + name);
+                System.out.println("Não há alunos com o nome: " + name);
               }
-              
+
               break;
 
           }
         } catch (NumberFormatException e) {
           System.err.println("ERRO");
         }
-      } while (!exit);
+      } while (!saida);
     } catch (EOFException e) {
-      System.err.println("Disconnected");
+      System.err.println("Disconectado do servidor");
     } catch (ConnectException e) {
-      System.err.println("Could not connect to server");
+      System.err.println("ERRO ao ligar ao server");
     } catch (SocketException e) {
-      System.err.println("Lost connection to server");
+      System.err.println("Perdeu a conexão ao servidor");
     } catch (ClassNotFoundException | IOException e) {
       e.printStackTrace();
     }
   }
-
 
   private static Student createStudent(BufferedReader teclado) throws IOException {
     System.out.println("Nome do estudante: ");

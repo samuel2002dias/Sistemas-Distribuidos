@@ -1,9 +1,10 @@
-import java.io.BufferedReader;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ public class ConnectionAluno extends Thread {
     private ArrayList<Aluno> listaAlunos;
 
     private static final String SERVER_HEADER = "\n_______________________\n|        SERVER       |\n\n";
-    private static final String SERVER_FOOTER = "|                     |\n_______________________\nEOF";
 
     public ConnectionAluno(ServerSocket serverSocket, int[] numeroAcessos, ArrayList<Aluno> listaAlunos) {
         super();
@@ -39,72 +39,84 @@ public class ConnectionAluno extends Thread {
                 System.out.println("Client " + clientSocket.getInetAddress().getHostAddress() + " connected");
 
                 // Setup input and output streams
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+                out.flush();
+                ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
 
                 // Send welcome message to the client
-                out.println("Connected to the server " + serverSocket.getInetAddress().getHostAddress());
+                out.writeObject("Connected to the server " + serverSocket.getInetAddress().getHostAddress());
 
-                String inputLine;
+                String inputLine = (String) in.readObject();
+                // out.writeObject(inputLine);
 
                 // Read input from the client
-                while ((inputLine = in.readLine()) != null) {
-                    System.out.println("Client: Option=" + inputLine);
+                boolean continueLoop = true;
 
-                    if (inputLine.equalsIgnoreCase("5")) {
-                        break;
-                    }
+                while (continueLoop) {
 
                     switch (inputLine) {
                         case "1":
                             // Register a new student
                             synchronized (listaAlunos) {
-                                String numero = in.readLine();
-                                String nome = in.readLine();
-                                String curso = in.readLine();
-                                String telemovel = in.readLine();
-                                String email = in.readLine();
+                                String numero = (String) in.readObject();
+                                String nome = (String) in.readObject();
+                                String curso = (String) in.readObject();
+                                String telemovel = (String) in.readObject();
+                                String email = (String) in.readObject();
 
                                 // Check if the student is already registered
                                 boolean isDuplicate = verificaRepetidos(Integer.parseInt(numero), listaAlunos);
 
                                 if (isDuplicate) {
-                                    out.println(SERVER_HEADER
+                                    out.writeObject(SERVER_HEADER
                                             + "Aluno repetido. Não foi registado novamente. Número de alunos registados: "
-                                            + listaAlunos.size() + ".\n\n" + SERVER_FOOTER);
+                                            + listaAlunos.size() + ".\n\n");
+                                    out.flush();
                                 } else {
                                     Aluno novo = new Aluno(Integer.parseInt(numero), nome, curso,
                                             Integer.parseInt(telemovel), email);
                                     listaAlunos.add(novo);
                                     writeAlunosToFile(listaAlunos);
-                                    out.println(SERVER_HEADER + "Registado com sucesso. Número de alunos registados: "
-                                            + listaAlunos.size() + ".\n\n" + SERVER_FOOTER);
+                                    out.writeObject(
+                                            SERVER_HEADER + "Registado com sucesso. Número de alunos registados: "
+                                                    + listaAlunos.size() + ".\n\n");
                                     out.flush();
                                 }
                             }
                             break;
                         case "2":
                             // Send the list of registered students to the client
-                            out.println(outputListaDeAlunos(listaAlunos));
+                            out.writeObject(outputListaDeAlunos(listaAlunos));
                             out.flush();
                             break;
                         case "3":
                             // Send the number of accesses to the server to the client
-                            out.println(SERVER_HEADER + "Numero de acessos ao servidor ate ao momento: "
-                                    + numeroAcessos[0] + "\n\n" + SERVER_FOOTER);
+                            out.writeObject(SERVER_HEADER + "Numero de acessos ao servidor ate ao momento: "
+                                    + numeroAcessos[0] + "\n\n");
                             out.flush();
                             break;
                         case "4":
                             // Send the phone number of a specific student to the client
-                            String nome = in.readLine();
-                            out.println(devolveNumContacto(nome, listaAlunos));
+                            String nome = (String) in.readObject();
+                            out.writeObject(devolveNumContacto(nome, listaAlunos));
                             out.flush();
+                            break;
+                        case "5":
+                            // Close the connection
+                            System.out.println(
+                                    "Client " + clientSocket.getInetAddress().getHostAddress() + " disconnected");
+
+                            synchronized (numeroAcessos) {
+                                numeroAcessos[0] = numeroAcessos[0] - 1;
+                            }
+                            continueLoop = false;
                             break;
                     }
                 }
-                break;
+
             }
-        } catch (IOException e) {
+
+        } catch (IOException | ClassNotFoundException e) {
         }
         try {
 
@@ -139,7 +151,7 @@ public class ConnectionAluno extends Thread {
             lista += "Email: " + aluno.getEmail() + "\n";
             lista += "-----------------------\n";
         }
-        lista += "\n" + SERVER_FOOTER;
+        lista += "\n";
         return lista;
     }
 
@@ -153,13 +165,13 @@ public class ConnectionAluno extends Thread {
                 lista += "-----------------------\n\n";
             }
         }
-        lista += SERVER_FOOTER;
+
         return lista;
     }
 
     private static void writeAlunosToFile(ArrayList<Aluno> alunos) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-                "C:\\\\Users\\\\BEIRATOOLS\\\\Desktop\\\\Sistemas-Distribuidos\\\\Aula5\\\\src\\\\aluno.txt"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("C:\\Users\\joaop\\Desktop\\SD\\ficha5\\src\\aluno.ser"))) {
             oos.writeObject(alunos);
         } catch (IOException e) {
             System.err.println("Error writing list of students: " + e.getMessage());

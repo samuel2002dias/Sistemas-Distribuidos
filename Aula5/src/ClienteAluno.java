@@ -2,6 +2,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -16,12 +18,20 @@ public class ClienteAluno {
 			Socket socket = new Socket(serverAddress, portNumber);
 
 			// Initialize input and output streams
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+			ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+			out.flush();
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
 			// Read welcome message from server
-			String inputLine = in.readLine();
-			System.out.println(inputLine);
+			String inputLine = "";
+			try {
+				inputLine = (String) in.readObject();
+			} catch (ClassNotFoundException e) {
+				System.out.println("erro");
+				e.printStackTrace();
+			}
+			
 
 			// If server is full, close the connection
 			if (inputLine.equals("Server reached maximum capacity, try again later.")) {
@@ -42,7 +52,7 @@ public class ClienteAluno {
 					String choice = new BufferedReader(new InputStreamReader(System.in)).readLine();
 
 					// Send user choice to server
-					out.println(choice);
+					out.writeObject(choice);
 					out.flush();
 
 					// Process user choice
@@ -51,30 +61,30 @@ public class ClienteAluno {
 							// Register student
 							System.out.print("\nNumber: ");
 							String number = new BufferedReader(new InputStreamReader(System.in)).readLine();
-							out.println(number);
+							out.writeObject(number);
 
 							System.out.print("Name: ");
 							String name = new BufferedReader(new InputStreamReader(System.in)).readLine();
-							out.println(name);
+							out.writeObject(name);
 
 							System.out.print("Course: ");
 							String course = new BufferedReader(new InputStreamReader(System.in)).readLine();
-							out.println(course);
+							out.writeObject(course);
 
 							System.out.print("Phone number: ");
 							String phone = new BufferedReader(new InputStreamReader(System.in)).readLine();
-							out.println(phone);
+							out.writeObject(phone);
 
 							System.out.print("Email: ");
 							String email = new BufferedReader(new InputStreamReader(System.in)).readLine();
-							out.println(email);
+							out.writeObject(email);
 							break;
 
 						case "4":
 							// View student data
 							System.out.print("\nName: ");
 							String studentName = new BufferedReader(new InputStreamReader(System.in)).readLine();
-							out.println(studentName);
+							out.writeObject(studentName);
 							break;
 
 						case "5":
@@ -85,11 +95,16 @@ public class ClienteAluno {
 					}
 
 					// Read server response
-					while ((inputLine = in.readLine()) != null) {
-						if (inputLine.equals("EOF")) {
-							break;
+					try {
+						while ((inputLine = (String) in.readObject()) != null) {
+							if (inputLine.equals("EOF")) {
+								break;
+							}
+							System.out.println(inputLine);
 						}
-						System.out.println(inputLine);
+					} catch (ClassNotFoundException e) {
+						System.err.println("ERRO");
+						e.printStackTrace();
 					}
 				}
 			}

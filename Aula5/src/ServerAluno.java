@@ -17,10 +17,8 @@ public class ServerAluno {
 	private int[] numeroAcessos;
 
 	public ServerAluno() {
-		// Port number for the server to listen on
+		
 		int portNumber = 2222;
-
-		// Create a server socket to listen for client connections
 		ServerSocket serverSocket = null;
 
 		try {
