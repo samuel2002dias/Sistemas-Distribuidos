@@ -1,9 +1,5 @@
 package com.example.webrestmysql;
 
-import java.util.Date;
-import java.util.ArrayList;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,18 +7,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
+import java.util.Date;
+
 @Entity
-@Table(name = "professor")
-public class Professor {
+@Table(name = "aluno")
+public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_professor")
-    private Long IdProfessor;
+    @Column(name = "id_aluno")
+    private int IdAluno;
 
     @Column(name = "nome")
     private String nome;
@@ -43,15 +40,16 @@ public class Professor {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Disciplina> disciplinas_lecionadas;
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
+    private Curso curso;
 
-    public Long getIdProfessor() {
-        return IdProfessor;
+    public int getIdAluno() {
+        return IdAluno;
     }
 
-    public void setIdProfessor(Long idProfessor) {
-        IdProfessor = idProfessor;
+    public void setIdAluno(int idAluno) {
+        IdAluno = idAluno;
     }
 
     public String getNome() {
@@ -102,11 +100,12 @@ public class Professor {
         this.email = email;
     }
 
-    public ArrayList<Disciplina> getDisciplinas_lecionadas() {
-        return disciplinas_lecionadas;
+    public Curso getCurso() {
+        return curso;
     }
 
-    public void setDisciplinas_lecionadas(ArrayList<Disciplina> disciplinas_lecionadas) {
-        this.disciplinas_lecionadas = disciplinas_lecionadas;
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
+
 }
