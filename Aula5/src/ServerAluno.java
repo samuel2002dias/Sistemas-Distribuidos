@@ -17,13 +17,18 @@ public class ServerAluno {
 	private int[] numeroAcessos;
 
 	public ServerAluno() {
+<<<<<<< Updated upstream
 		
 		int portNumber = 2222;
+=======
+
+		// Create a server socket to listen for client connections
+>>>>>>> Stashed changes
 		ServerSocket serverSocket = null;
 
 		try {
-			serverSocket = new ServerSocket(portNumber);
-			System.out.println("Server started on port " + portNumber);
+			serverSocket = new ServerSocket(2222);
+			System.out.println("Server started");
 		} catch (IOException e) {
 			System.err.println("Error: " + e.getMessage());
 		}
